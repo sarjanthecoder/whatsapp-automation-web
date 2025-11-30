@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WhatsApp Automation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .card {
+      width: 90%;
+      max-width: 430px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 25px;
+      border-radius: 18px;
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      color: white;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 26px;
+      margin-bottom: 5px;
+    }
+
+    p.subtitle {
+      text-align: center;
+      font-size: 14px;
+      opacity: 0.7;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 14px;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      margin-bottom: 15px;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #d1d5db;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border: none;
+      border-radius: 50px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+      box-shadow: 0 8px 20px rgba(22, 163, 74, 0.5);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(22, 163, 74, 0.7);
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    #status {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+      display: none;
+    }
+
+    .ok { color: #4ade80; }
+    .err { color: #f87171; }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+
+    <h1>WhatsApp Automation</h1>
+    <p class="subtitle">Send WhatsApp messages instantly using Selenium backend</p>
+
+    <form id="waForm">
+      <label>Contact Name / Number</label>
+      <input type="text" name="contact" id="contact" placeholder="e.g., Mom / +91XXXXXXXXXX" required>
+
+      <label>Message</label>
+      <textarea name="message" id="message" placeholder="Type your message…" required></textarea>
+
+      <label>Number of Messages</label>
+      <input type="number" name="count" id="count" min="1" value="1" required>
+
+      <button type="submit">🚀 Send Messages</button>
+
+      <p id="status"></p>
+    </form>
+
+  </div>
+
+  <script>
+    const form = document.getElementById("waForm");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const payload = {
+        contact: document.getElementById("contact").value,
+        message: document.getElementById("message").value,
+        count: document.getElementById("count").value
+      };
+
+      status.style.display = "block";
+      status.className = "";
+      status.textContent = "Sending… ⏳";
+
+      try {
+        const res = await fetch("/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          status.classList.add("ok");
+          status.textContent = "✅ Message task started!";
+        } else {
+          status.classList.add("err");
+          status.textContent = "❌ " + data.error;
+        }
+
+      } catch (error) {
+        status.classList.add("err");
+        status.textContent = "⚠ Error: " + error.message;
+      }
+    });
+  </script>
+
+</body>
+</html>
