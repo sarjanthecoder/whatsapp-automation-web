@@ -25,7 +25,7 @@ def initialize_driver():
     chrome_options.add_argument("--profile-directory=Default")
     chrome_options.add_argument("--start-maximized")
     chrome_options.add_argument("--disable-infobars")
-    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-notification")
     
     service = Service()
     
@@ -140,3 +140,4 @@ if __name__ == "__main__":
     print("🚀 Starting server...")
     initialize_driver()
     app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
+
